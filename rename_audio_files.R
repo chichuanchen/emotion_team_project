@@ -80,6 +80,30 @@ rename_audio_files <- function(mydir) {
     }
   }))
 }
+##############################################
+
+# Helper functions---------------------------------------
+
+find_sent1 = function(path_with_sent1_files){
+        # param: path_with_sent1_files
+        #         - the path which contains the sent1 files
+        # return:
+        #         - the file string with path of the correct sint1 file
+        list_sent1_candidates = list.files(path_with_sent1_files,full.names = T,
+                                           pattern = "Sent1")
+        list_boolean_modify = grepl(pattern = "modify",x = list_sent1_candidates)
+        if(any(list_boolean_modify)){
+                return(list_sent1_candidates[list_boolean_modify])
+        }else if(length(list_sent1_candidates)==1){
+                return(list_sent1_candidates)
+        }else{
+                error(paste0("The number of Sent 1 file in ",
+                             path_with_sent1_files,
+                             " is incorrect"))
+        }
+}
+sent_filew
+
 # Main funcions------------------------------------------
 rename_audio_files <- function(mydir) {
         emotions <- dir(mydir, all.files = F, recursive = T)
