@@ -37,28 +37,44 @@ rename_audio_files <- function(mydir) {
       setwd(path_emotion_group) ## Not recommended (does not work for mclapply)
       # fix the modify files first
       # only A would have modify
-      emotion <- substr(.group_list[[i]], nchar(.group_list[[i]]) - 5, nchar(.group_list[[i]]) - 4)
+      # emotion <- substr(path_emotion_group, nchar(path_emotion_group) - 5, nchar(path_emotion_group) - 4)
+
+      # Solution 1: REGEX
+      # locate the start and the length of the emotion type string
+      locator <- regexpr(
+        pattern = "(?<=all_files/)\\w*(?=/G)",
+        text = path_emotion_group,
+        perl = T
+      )
+      locator_starting_position <- locator
+      locator_length <- attr(locator, "match.length")
+      substr(
+        x = path_emotion_group,
+        start = locator_starting_position,
+        stop = locator_starting_position + locator_length - 1
+      )
+
       name_with_modify <- list.files(.group_list[i], pattern = "modify")
       if (!!length(name_with_modify)) {
         modify_new_name <-
-          sprintf("%s_%s_A.wav", emotion, substring(.group_list[[i]], nchar(.group_list[[i]]) - 2))
+          sprintf("%s_%s_A.wav", emotion, substring(path_emotion_group, nchar(path_emotion_group) - 2))
         file_to_delete <- list.files(.group_list[i], pattern = "Sent1")
         file.rename(name_with_modify, modify_new_name)
         file.remove(file_to_delete)
         # print(emotion)
-        # print(.group_list[[i]])
+        # print(path_emotion_group)
         print(paste0(name_with_modify, " was changed to ", modify_new_name))
         print(paste0(file_to_delete, " has been deleted"))
       } else {
         A_tbc <- list.files(.group_list[i], pattern = "Sent1")
         A_new_name <-
-          sprintf("%s_%s_A.wav", emotion, substring(.group_list[[i]], nchar(.group_list[[i]]) - 2))
+          sprintf("%s_%s_A.wav", emotion, substring(path_emotion_group, nchar(path_emotion_group) - 2))
         file.rename(A_tbc, A_new_name)
         print(paste0(A_tbc, " was changed to ", A_new_name))
       }
       B_tbc <- list.files(.group_list[i], pattern = "Sent2")
       B_new_name <-
-        sprintf("%s_%s_B.wav", emotion, substring(.group_list[[i]], nchar(.group_list[[i]]) - 2))
+        sprintf("%s_%s_B.wav", emotion, substring(path_emotion_group, nchar(path_emotion_group) - 2))
       file.rename(B_tbc, B_new_name)
       print(paste0(B_tbc, " was changed to ", B_new_name))
     }
