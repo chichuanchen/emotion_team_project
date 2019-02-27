@@ -18,20 +18,23 @@
 # mydir <- "D:/emotion_audios/all_files"
 
 # usage example: rename_audio_files("D:/emotion_audios/all_files")
-
 rename_audio_files <- function(mydir) {
-  emotions <- dir(mydir, all.files = F)
+  emotions <- dir(mydir, all.files = F, recursive = T)
 
   # list out all the group directories
   group_list <- sapply(emotions, function(.emotions) {
-    list.dirs(file.path(mydir, .emotions, fsep = "/"), full.names = T, recursive = F)
+    list.dirs(file.path(mydir, .emotions), full.names = T, recursive = F)
   }, simplify = F, USE.NAMES = T)
 
   invisible(lapply(group_list, function(.group_list) {
 
     # print(paste0("emotion now: ", emotion))
     for (i in 1:length(.group_list)) {
-      setwd(.group_list[[i]])
+
+      # local constants
+      path_emotion_group <- .group_list[[i]]
+
+      setwd(path_emotion_group) ## Not recommended (does not work for mclapply)
       # fix the modify files first
       # only A would have modify
       emotion <- substr(.group_list[[i]], nchar(.group_list[[i]]) - 5, nchar(.group_list[[i]]) - 4)
