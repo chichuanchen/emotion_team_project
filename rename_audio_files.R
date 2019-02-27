@@ -80,3 +80,38 @@ rename_audio_files <- function(mydir) {
     }
   }))
 }
+# Main funcions------------------------------------------
+rename_audio_files <- function(mydir) {
+        emotions <- dir(mydir, all.files = F, recursive = T)
+        invisible(lapply(1:length(emotions), function(.emotion_index) {
+                emotion_type <- emotions[.emotion_index]
+                path_emotion <- file.path(mydir, emotion_type)
+                
+                list_group_names <- dir(path_emotion)
+                
+                invisible(lapply(1:length(list_group_names), function(.group_index) {
+                        group_name = list_group_names[.group_index]
+                        path_emotion_group = file.path(path_emotion,group_name)    
+                        list_files = list.files(path_emotion_group,full.names = T) 
+                        
+                        # Call helper functions
+                        # identift the correct sent 1 file
+                        sent1_file_name = find_sent1(dir) # should output with path
+                        
+                        # new names
+                        sent1_new_name = file.path(path_emotion_group,
+                                                   paste0(emotion_type,"_",group_name,"_A.wav"))
+                        sent2_new_name = file.path(path_emotion_group,
+                                                   paste0(emotion_type,"_",group_name,"_B.wav"))
+                        # sent1
+                        file.rename(from = sent1_file_name,
+                                    to = sent1_new_name)
+                        # sent2
+                        file.rename(from = sent2_file_name,
+                                    to = sent2_new_name)
+                }))
+                # old file names
+                
+                # new file names
+        }))
+}
